@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --dark: #0F172A;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --primary: #1CBEB9;
+  --health-green: #22C55E;
+  --health-cyan: #06B6D4;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/60 shadow-card;
+  }
+
+  .health-card {
+    @apply bg-white rounded-2xl border border-border shadow-card transition-all duration-300 hover:shadow-card-md hover:-translate-y-0.5;
+  }
+
+  .metric-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-muted hover:text-dark hover:bg-slate-100;
+  }
+
+  .sidebar-link.active {
+    @apply bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary;
+  }
+}
+
+@layer utilities {
+  .text-gradient-blue {
+    @apply bg-gradient-to-r from-primary to-health-cyan bg-clip-text text-transparent;
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(28, 190, 185, 0.25);
+  }
+
+  .glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
+  }
+}
