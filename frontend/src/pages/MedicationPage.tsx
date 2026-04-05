@@ -1,175 +1,221 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useSimulation } from '../hooks/useSimulation';
 import { useHealthStore } from '../store/useHealthStore';
-import { BodyCanvas } from '../components/Dashboard/BodyCanvas';
-import { Pill, Activity, Syringe, ChevronRight } from 'lucide-react';
+import { BodyCanvas } from '../components/simulation/BodyCanvas';
+
+const PRESET_DRUGS = [
+  { name: 'Lisinopril', dosage: 10, note: 'ACE Inhibitor' },
+  { name: 'Metformin', dosage: 500, note: 'Biguanide' },
+  { name: 'Aspirin', dosage: 100, note: 'Antiplatelet' },
+  { name: 'Atorvastatin', dosage: 20, note: 'Statin' },
+];
 
 export default function MedicationPage() {
-  const [drug, setDrug] = useState('');
-  const [dosage, setDosage] = useState('');
+  const [targetOrgan, setTargetOrgan] = useState('Myocardium (Left Ventricle)');
+  const [drug, setDrug] = useState(PRESET_DRUGS[0].name);
+  const [dosage, setDosage] = useState(PRESET_DRUGS[0].dosage);
   
-  const runMedicationSimulation = useHealthStore(state => state.runMedicationSimulation);
-  const medSim = useHealthStore(state => state.medSim);
-  const healthScore = useHealthStore(state => state.healthScore);
+  const { stage, progress, isRunning, initialScore, startSimulation } = useSimulation();
+  const healthScore = useHealthStore((s) => s.healthScore);
 
   const handleSimulate = () => {
-    if (drug && dosage && !medSim.isRunning) runMedicationSimulation(drug, dosage);
+    if (drug && dosage && !isRunning) startSimulation(drug, dosage.toString());
   };
 
-  // Convert string Stage to readable format
-  const formatStage = (stage: string) => {
-    switch (stage) {
-      case 'idle': return 'Awaiting Simulation';
-      case 'ingestion': return 'Ingestion Phase (Oral)';
-      case 'absorption': return 'Hepatic Absorption';
-      case 'peak': return 'Peak Systemic Effect';
-      case 'recovery': return 'Metabolic Recovery';
-      default: return stage;
-    }
+  const getStageWidth = (s: string) => {
+    if (!isRunning) return '0%';
+    const stages = ['idle', 'ingestion', 'absorption', 'peak', 'recovery'];
+    const cIdx = stages.indexOf(stage);
+    const sIdx = stages.indexOf(s);
+    if (sIdx < cIdx) return '100%';
+    if (sIdx === cIdx) return `${progress}%`;
+    return '0%';
   };
-
-  // Map progress to Pill Y-axis position mathematically down the torso
-  // (-150 is mouth, 50 is stomach). Fades away at 30+
-  const pillY = -150 + medSim.progress * 2;
-  const pillOpacity = medSim.progress < 5 ? 0 : (medSim.progress > 25 ? 0 : 1);
 
   return (
-    <div className="w-full h-full flex flex-col gap-6">
-      
-      <header className="border-b border-panelBorder pb-4 shrink-0">
-        <h1 className="text-2xl md:text-3xl font-light text-white tracking-tight">Pharmacokinetic <span className="font-bold text-neon-cyan">Simulation</span></h1>
-        <p className="text-text-muted text-xs md:text-sm mt-1">Live timeline mapping of pharmaceutical compounds</p>
-      </header>
+    <div className="w-full flex flex-col min-h-screen">
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h2 className="text-4xl font-black text-on-surface font-technical uppercase tracking-tight">Treatment Planner</h2>
+          <p className="text-on-surface-variant text-sm mt-2">Therapeutic trajectory mapping and efficacy projection</p>
+        </div>
+      </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Controls */}
-        <motion.div 
-          className="lg:col-span-4 xl:col-span-3 glass-panel p-6 flex flex-col z-10"
-          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-        >
-          <h2 className="text-xl font-mono uppercase tracking-widest text-white border-b border-white/10 pb-4 mb-6 flex items-center gap-2">
-            <Syringe className="text-neon-cyan" /> Med Sim
-          </h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="text-xs font-mono uppercase tracking-widest text-text-muted mb-2 block">Compound</label>
-              <input 
-                type="text" 
-                placeholder="e.g. Lisinopril"
-                value={drug}
-                onChange={e => setDrug(e.target.value)}
-                disabled={medSim.isRunning}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-neon-cyan focus:shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all placeholder:text-text-muted/50 disabled:opacity-50"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-mono uppercase tracking-widest text-text-muted mb-2 block">Dosage (mg)</label>
-              <input 
-                type="text" 
-                placeholder="e.g. 20mg"
-                value={dosage}
-                onChange={e => setDosage(e.target.value)}
-                disabled={medSim.isRunning}
-                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-neon-cyan focus:shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all placeholder:text-text-muted/50 disabled:opacity-50"
-              />
-            </div>
-            
-            <button
-              disabled={medSim.isRunning || !drug || !dosage}
-              onClick={handleSimulate}
-              className={`w-full mt-4 font-bold tracking-widest uppercase p-3 rounded-lg flex justify-center items-center gap-2 transition-all ${
-                medSim.isRunning 
-                  ? 'bg-white/10 text-text-muted cursor-not-allowed' 
-                  : 'bg-neon-cyan text-background hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] cursor-pointer'
-              }`}
-            >
-              <Activity size={18} /> {medSim.isRunning ? 'Running...' : 'Inject'}
-            </button>
+        {/* Left Column: Controls */}
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          <div className="glass-panel p-6 relative overflow-hidden group">
+             <div className="absolute top-0 right-0 p-4 opacity-5">
+               <span className="material-symbols-outlined text-8xl">science</span>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+               <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-technical uppercase tracking-widest text-secondary block mb-2">Target System</label>
+                    <select 
+                      className="w-full bg-surface-container-highest border border-outline-variant/30 text-on-surface p-3 rounded font-technical appearance-none focus:outline-none focus:border-secondary transition-colors"
+                      value={targetOrgan}
+                      onChange={(e) => setTargetOrgan(e.target.value)}
+                      disabled={isRunning}
+                    >
+                      <option>Myocardium (Left Ventricle)</option>
+                      <option>Hepatic System (Liver)</option>
+                      <option>Renal Cortex (Kidneys)</option>
+                      <option>Neural Network</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-technical uppercase tracking-widest text-primary block mb-2">Primary Agent</label>
+                    <select 
+                      className="w-full bg-surface-container-highest border border-outline-variant/30 text-primary p-3 rounded font-technical font-bold appearance-none focus:outline-none focus:border-primary focus:shadow-[0_0_15px_rgba(0,244,254,0.2)] transition-all"
+                      value={drug}
+                      onChange={(e) => {
+                        const d = PRESET_DRUGS.find(p => p.name === e.target.value);
+                        if (d) { setDrug(d.name); setDosage(d.dosage); }
+                      }}
+                      disabled={isRunning}
+                    >
+                      {PRESET_DRUGS.map(p => <option key={p.name} value={p.name}>{p.name} ({p.note})</option>)}
+                    </select>
+                  </div>
+               </div>
+
+               <div className="space-y-8 flex flex-col justify-center">
+                  <div>
+                    <div className="flex justify-between items-end mb-2">
+                      <label className="text-[10px] font-technical uppercase tracking-widest text-on-surface-variant">Dosage Titration</label>
+                      <div>
+                        <span className="text-xl font-bold font-technical text-on-surface">{dosage}</span>
+                        <span className="text-[10px] font-technical text-on-surface-variant ml-1">mg</span>
+                      </div>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="5" 
+                      max="1000" 
+                      step="5"
+                      value={dosage} 
+                      onChange={(e) => setDosage(parseInt(e.target.value))}
+                      disabled={isRunning}
+                      className="w-full custom-slider appearance-none bg-transparent"
+                    />
+                  </div>
+                  <button 
+                    className="w-full py-4 bg-primary/10 border border-primary text-primary font-technical font-bold text-xs uppercase tracking-widest rounded shadow-[inset_0_0_20px_rgba(0,244,254,0.1)] hover:bg-primary/20 hover:shadow-[0_0_20px_rgba(0,244,254,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleSimulate}
+                    disabled={isRunning}
+                  >
+                    {isRunning ? 'SIMULATION IN PROGRESS' : 'CALCULATE TRAJECTORY'}
+                  </button>
+               </div>
+             </div>
           </div>
 
-          <AnimatePresence>
-            {(medSim.isRunning || medSim.finalScore !== null) && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }} 
-                animate={{ opacity: 1, height: 'auto' }} 
-                className="mt-6 pt-6 border-t border-white/10 overflow-hidden"
-              >
-                <h3 className="text-[10px] uppercase font-mono text-neon-cyan tracking-widest mb-4">Outcome Metric</h3>
-                <div className="flex justify-between items-center bg-black/40 p-4 rounded-xl border border-white/5 shadow-inner">
-                  <div className="text-center">
-                    <p className="text-[10px] text-text-muted mb-1 font-mono uppercase">Initial</p>
-                    <p className="text-2xl font-bold text-gray-300">{medSim.initialScore}</p>
+          {/* Timeline Track */}
+          <div className="glass-panel p-6">
+            <h3 className="text-xs font-technical font-bold text-on-surface-variant tracking-widest uppercase mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-base">linear_scale</span> Pharmacokinetic Timeline
+            </h3>
+
+            <div className="relative mt-12 pb-4">
+              <div className="absolute top-[8px] left-0 w-full h-[2px] bg-outline-variant/30"></div>
+              
+              <div className="relative flex justify-between z-10 w-full px-4">
+                {/* Stage: Ingestion */}
+                <div className="flex flex-col items-center group">
+                  <div className={`w-4 h-4 rounded-full border-2 bg-surface mb-3 transition-colors ${['ingestion', 'absorption', 'peak', 'recovery'].includes(stage) ? 'border-primary' : 'border-outline-variant'}`}>
+                    <div className={`w-full h-full bg-primary transition-all origin-left`} style={{transform: `scaleX(${getStageWidth('ingestion')})`}}></div>
                   </div>
-                  <ChevronRight size={20} className="text-white/20" />
-                  <div className="text-center">
-                    <p className="text-[10px] text-text-muted mb-1 font-mono uppercase">{medSim.isRunning ? 'Active' : 'Final'}</p>
-                    <p className={`text-2xl font-bold shadow-glow-green drop-shadow-[0_0_5px_currentColor] ${healthScore > medSim.initialScore ? 'text-neon-green' : 'text-neon-cyan'}`}>
-                      {medSim.isRunning ? healthScore : medSim.finalScore}
-                    </p>
-                  </div>
+                  <p className={`text-[10px] font-technical uppercase tracking-widest mb-1 ${stage === 'ingestion' ? 'text-primary' : 'text-slate-500'}`}>Ingestion</p>
+                  <p className="text-[9px] text-slate-600 font-technical uppercase">T+0.5h</p>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Visualizer & Timeline Tracker */}
-        <motion.div 
-          className="lg:col-span-8 xl:col-span-9 glass-panel flex flex-col justify-center items-center relative border-neon-cyan/20 min-h-[500px]"
-          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-        >
-          {/* SIMULATION ACTIVE HUD */}
-          <AnimatePresence>
-            {medSim.isRunning && (
-               <motion.div 
-                initial={{ opacity: 0, y: -20 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                exit={{ opacity: 0, y: -20 }}
-                className="absolute top-6 w-3/4 z-30 flex flex-col gap-2"
-               >
-                 <div className="flex justify-between text-xs font-mono uppercase tracking-widest px-2">
-                   <span className="text-neon-cyan animate-pulse">{formatStage(medSim.stage)}</span>
-                   <span className="text-white">{medSim.progress}%</span>
-                 </div>
-                 <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden border border-white/5">
-                   <div 
-                    className="h-full bg-neon-cyan shadow-[0_0_10px_#06b6d4] transition-all duration-100" 
-                    style={{ width: `${medSim.progress}%` }} 
-                   />
-                 </div>
-               </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* PHYSICAL PILL DROP ANIMATION */}
-          <motion.div
-            animate={{ 
-              y: pillY, 
-              opacity: pillOpacity,
-              scale: medSim.progress > 15 ? 0.5 : 1
-            }}
-            transition={{ type: 'tween', duration: 0.1 }}
-            className="absolute z-20 flex flex-col items-center pointer-events-none"
-          >
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-[0_0_30px_#fff]">
-              <Pill size={16} className="text-neon-cyan" />
+                
+                {/* Stage: Absorption */}
+                <div className="flex flex-col items-center group">
+                  <div className={`w-4 h-4 rounded-full border-2 bg-surface mb-3 transition-colors ${['absorption', 'peak', 'recovery'].includes(stage) ? 'border-secondary' : 'border-outline-variant'}`}>
+                     <div className={`w-full h-full bg-secondary transition-all origin-left`} style={{transform: `scaleX(${getStageWidth('absorption')})`}}></div>
+                  </div>
+                  <p className={`text-[10px] font-technical uppercase tracking-widest mb-1 ${stage === 'absorption' ? 'text-secondary' : 'text-slate-500'}`}>Absorption</p>
+                  <p className="text-[9px] text-slate-600 font-technical uppercase">T+2.0h</p>
+                </div>
+                
+                {/* Stage: Peak */}
+                <div className="flex flex-col items-center group">
+                  <div className={`w-4 h-4 rounded-full border-2 bg-surface mb-3 transition-colors ${['peak', 'recovery'].includes(stage) ? 'border-tertiary' : 'border-outline-variant'}`}>
+                     <div className={`w-full h-full bg-tertiary transition-all origin-left`} style={{transform: `scaleX(${getStageWidth('peak')})`}}></div>
+                  </div>
+                  <p className={`text-[10px] font-technical uppercase tracking-widest mb-1 ${stage === 'peak' ? 'text-tertiary' : 'text-slate-500'}`}>Peak Effect</p>
+                  <p className="text-[9px] text-slate-600 font-technical uppercase">T+4.5h</p>
+                </div>
+                
+                {/* Stage: Recovery */}
+                <div className="flex flex-col items-center group">
+                  <div className={`w-4 h-4 rounded-full border-2 bg-surface mb-3 transition-colors ${['recovery'].includes(stage) ? 'border-purple-400' : 'border-outline-variant'}`}>
+                     <div className={`w-full h-full bg-purple-400 transition-all origin-left`} style={{transform: `scaleX(${getStageWidth('recovery')})`}}></div>
+                  </div>
+                  <p className={`text-[10px] font-technical uppercase tracking-widest mb-1 ${stage === 'recovery' ? 'text-purple-400' : 'text-slate-500'}`}>Clearance</p>
+                  <p className="text-[9px] text-slate-600 font-technical uppercase">T+12.0h</p>
+                </div>
+              </div>
             </div>
-            <div className="mt-2 text-white font-mono text-[8px] tracking-widest font-bold px-2 rounded-full border border-white/20 whitespace-nowrap">
-              {medSim.drug} {medSim.dosage}
-            </div>
-          </motion.div>
+          </div>
 
-          {medSim.isRunning && (
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-neon-cyan/5 pointer-events-none rounded-xl mix-blend-screen"
-            />
-          )}
-          
-          <BodyCanvas />
-        </motion.div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-surface-container-highest/50 p-4 border-l-2 border-primary">
+               <p className="text-[10px] text-on-surface-variant font-technical uppercase mb-1 tracking-widest">Active Sim Status</p>
+               <p className="text-secondary text-sm font-technical uppercase">{isRunning ? `Processing: ${stage}` : 'Idle'}</p>
+            </div>
+            <div className="bg-surface-container-highest/50 p-4 border-l-2 border-tertiary">
+               <p className="text-[10px] text-on-surface-variant font-technical uppercase mb-1 tracking-widest">Score Delta</p>
+               <p className="text-tertiary text-sm font-technical uppercase">
+                  {initialScore > 0 ? `${initialScore} -> ${healthScore} (${healthScore - initialScore > 0 ? '+' : ''}${healthScore - initialScore})` : 'Awaiting Input'}
+               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Efficacy Projections */}
+        <div className="lg:col-span-4 glass-panel p-6 flex flex-col">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-outline-variant/30">
+            <h3 className="text-sm font-technical font-bold text-on-surface uppercase tracking-widest">Efficacy Projection</h3>
+            <span className="px-2 py-1 bg-tertiary/10 text-tertiary text-[9px] font-technical uppercase tracking-[0.2em] border border-tertiary/20">High Confidence</span>
+          </div>
+
+          <div className="relative h-[300px] w-full bg-surface-container-highest/30 rounded flex items-center justify-center mb-6 overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,106,110,0.1)_0%,transparent_70%)]"></div>
+            <BodyCanvas />
+            
+            <div className="absolute bottom-4 left-4 flex items-center gap-2">
+               <span className="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#2ff801] animate-pulse"></span>
+               <span className="text-[9px] font-technical text-tertiary tracking-widest uppercase">Bio-Mapping Active</span>
+            </div>
+          </div>
+
+          <div className="flex-1">
+             <h4 className="text-[10px] font-technical text-slate-500 uppercase tracking-widest mb-3">Risk Reduction Matrix</h4>
+             <div className="grid grid-cols-2 gap-px bg-outline-variant/20 rounded overflow-hidden">
+                <div className="bg-surface p-4">
+                   <p className="text-xl font-bold font-technical text-tertiary">-18%</p>
+                   <p className="text-[9px] text-on-surface-variant font-technical uppercase mt-1">Hypertension Event</p>
+                </div>
+                <div className="bg-surface p-4">
+                   <p className="text-xl font-bold font-technical text-tertiary">-12%</p>
+                   <p className="text-[9px] text-on-surface-variant font-technical uppercase mt-1">Myocardial Stress</p>
+                </div>
+                <div className="bg-surface p-4">
+                   <p className="text-xl font-bold font-technical text-secondary">+8%</p>
+                   <p className="text-[9px] text-on-surface-variant font-technical uppercase mt-1">Vascular Elasticity</p>
+                </div>
+                <div className="bg-surface p-4">
+                   <p className="text-xl font-bold font-technical text-on-surface">Min</p>
+                   <p className="text-[9px] text-on-surface-variant font-technical uppercase mt-1">Hepatic Load</p>
+                </div>
+             </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

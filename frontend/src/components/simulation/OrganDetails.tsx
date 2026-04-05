@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHealthStore } from '../../store/useHealthStore';
-import { organConfig } from '../organConfig';
+import { organConfig } from './organConfig';
 import { ShieldAlert, Info, ActivitySquare } from 'lucide-react';
 
 export const OrganDetails: React.FC = () => {

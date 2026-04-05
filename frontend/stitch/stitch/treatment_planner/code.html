@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SYNTH-LIFE | Treatment Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#1c253e",
+                        "on-tertiary-fixed-variant": "#0d6200",
+                        "on-background": "#dfe4fe",
+                        "on-secondary-fixed-variant": "#00675f",
+                        "inverse-primary": "#006a6e",
+                        "primary-fixed": "#00f4fe",
+                        "inverse-surface": "#faf8ff",
+                        "tertiary-container": "#2ff801",
+                        "secondary": "#57fae9",
+                        "surface-container": "#11192e",
+                        "on-error": "#490006",
+                        "outline": "#6f758b",
+                        "background": "#070d1f",
+                        "secondary-fixed": "#57fae9",
+                        "on-surface": "#dfe4fe",
+                        "on-primary-fixed": "#004346",
+                        "surface-bright": "#222b47",
+                        "on-tertiary-fixed": "#064200",
+                        "on-secondary-container": "#dcfff9",
+                        "tertiary": "#8eff71",
+                        "error-dim": "#d7383b",
+                        "surface-container-high": "#171f36",
+                        "primary": "#a1faff",
+                        "inverse-on-surface": "#4f5469",
+                        "error-container": "#9f0519",
+                        "primary-dim": "#00e5ee",
+                        "on-primary-fixed-variant": "#006266",
+                        "tertiary-fixed": "#2ff801",
+                        "on-secondary": "#005c55",
+                        "outline-variant": "#41475b",
+                        "surface-container-lowest": "#000000",
+                        "primary-fixed-dim": "#00e5ee",
+                        "surface": "#070d1f",
+                        "secondary-dim": "#43ecdb",
+                        "surface-tint": "#a1faff",
+                        "surface-dim": "#070d1f",
+                        "tertiary-dim": "#2be800",
+                        "secondary-container": "#006a62",
+                        "surface-container-low": "#0c1326",
+                        "on-tertiary": "#0d6100",
+                        "on-tertiary-container": "#0b5800",
+                        "primary-container": "#00f4fe",
+                        "tertiary-fixed-dim": "#2be800",
+                        "on-primary-container": "#00575b",
+                        "on-surface-variant": "#a5aac2",
+                        "on-secondary-fixed": "#004842",
+                        "on-primary": "#006165",
+                        "error": "#ff716c",
+                        "surface-variant": "#1c253e",
+                        "on-error-container": "#ffa8a3",
+                        "secondary-fixed-dim": "#43ecdb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Space Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #070d1f; color: #dfe4fe; }
+        .font-technical { font-family: 'Space Grotesk', sans-serif; }
+        .glass-panel { background: rgba(28, 37, 62, 0.4); backdrop-filter: blur(12px); }
+        .inner-glow { box-shadow: inset 0 0 15px rgba(0, 245, 255, 0.1); }
+        .glow-text { text-shadow: 0 0 10px rgba(161, 250, 255, 0.5); }
+        .custom-scrollbar::-webkit-scrollbar { height: 4px; width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #41475b; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #00f4fe; }
+        .active-glow { box-shadow: 0 0 20px rgba(0, 245, 255, 0.2); }
+    </style>
+</head>
+<body class="bg-surface overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-cyan-500/10 bg-slate-950/40 backdrop-blur-xl shadow-[0_0_40px_rgba(0,245,255,0.05)] flex flex-col py-8 px-6 z-50">
+<div class="mb-12">
+<h1 class="text-xl font-bold tracking-widest text-cyan-400 font-technical">SYNTH-LIFE</h1>
+<p class="text-[10px] text-slate-500 font-technical mt-1">V 4.0.21</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">account_circle</span> Patient Profile
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">monitor_heart</span> Live Monitoring
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">biotech</span> Simulation Lab
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-cyan-400 border-r-2 border-cyan-400 bg-cyan-400/5 font-technical text-sm active-glow" href="#">
+<span class="material-symbols-outlined text-[20px]">assignment_add</span> Treatment Planner
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications_active</span> Alerts
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">insights</span> Analytics
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span> Reports
+            </a>
+<a class="flex items-center gap-3 py-2.5 px-3 rounded text-slate-400 hover:text-cyan-200 hover:bg-slate-800/50 transition-all font-technical text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span> Settings
+            </a>
+</nav>
+<button class="mt-auto w-full py-3 bg-gradient-to-r from-primary to-secondary text-on-primary font-technical font-bold text-xs tracking-widest rounded hover:shadow-[0_0_20px_rgba(161,250,255,0.4)] transition-all">
+            RUN SIMULATION
+        </button>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-transparent flex justify-between items-center px-8 z-40">
+<div class="flex items-center gap-4">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#57fae9]"></span>
+<h2 class="text-lg font-black text-cyan-400 uppercase tracking-tighter font-technical">HealthCore Simulation</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-slate-500 hover:text-cyan-400 transition-all cursor-pointer">notifications_active</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-slate-500 hover:text-cyan-400 transition-all cursor-pointer">sensors</span>
+<div class="flex items-center gap-3 border-l border-outline-variant pl-6">
+<div class="text-right">
+<p class="text-[10px] font-technical text-slate-500">SIMULATION OPERATOR</p>
+<p class="text-sm font-technical text-on-surface">Dr. Aris Thorne</p>
+</div>
+<img class="w-10 h-10 rounded bg-surface-container-highest border border-cyan-500/20" data-alt="High-tech profile portrait of a medical professional with subtle digital overlay and cyan lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLpmFJxYUbzlIcYWFg-MrJt5aT5_ywhQPNAmVN8OSWrek-XtBdxqRh59ntVwLroPZt7_MiUwFYBlKZXTTrlZUGMLlS80FSPVT_Q3F5hXLf3wv5V1O3gx9RT5RTTn8A2yWPBoy5AJX_JgGsnfQKuvMQ35dAmQn2YO6g52DizuZyh8xakxKzZXY58Y9oJgLfGnDSPsEMcXQ1M_NMUnB_LGfNlXpcGkU_7l1RnmEXp889nu-xTlb6weW0KTdz9vngnXc-6C2BblOAFKQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
+<!-- Header & Breadcrumbs -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<nav class="flex gap-2 text-[10px] font-technical uppercase tracking-widest text-outline mb-2">
+<span>Home</span> / <span>Patient 8829-X</span> / <span class="text-primary">Treatment Planner</span>
+</nav>
+<h3 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Therapeutic Projection <span class="text-primary-dim">v.4</span></h3>
+</div>
+<div class="flex gap-4">
+<div class="glass-panel px-4 py-2 rounded-lg border border-outline-variant/10 flex flex-col">
+<span class="text-[9px] font-technical text-slate-500">SIMULATION ACCURACY</span>
+<span class="text-xl font-technical text-tertiary">98.4%</span>
+</div>
+<div class="glass-panel px-4 py-2 rounded-lg border border-outline-variant/10 flex flex-col">
+<span class="text-[9px] font-technical text-slate-500">GENOMIC OVERLAP</span>
+<span class="text-xl font-technical text-primary">0.92</span>
+</div>
+</div>
+</div>
+<!-- 12-Column Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Column: Strategy & Meds (4 cols) -->
+<div class="col-span-4 space-y-6">
+<!-- Medication Selector -->
+<section class="glass-panel rounded-xl border border-outline-variant/15 p-5 inner-glow">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-technical text-xs font-bold tracking-widest text-primary-dim uppercase">Medication Protocol</h4>
+<span class="material-symbols-outlined text-slate-500 text-sm">help_outline</span>
+</div>
+<div class="space-y-3">
+<div class="relative">
+<label class="text-[10px] font-technical text-slate-500 uppercase mb-1 block">Primary Agent</label>
+<div class="w-full bg-surface-container-low border border-outline-variant/30 rounded px-4 py-3 flex justify-between items-center group hover:border-primary/50 transition-all cursor-pointer">
+<span class="text-on-surface text-sm font-technical uppercase">Cytovance-G9 (Engineered)</span>
+<span class="material-symbols-outlined text-primary text-lg">expand_more</span>
+</div>
+</div>
+<!-- Dosage Controls -->
+<div class="mt-8 space-y-6">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-technical text-slate-400 uppercase">Concentration (mg/dL)</span>
+<span class="text-sm font-technical text-primary">450</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="1000" min="0" type="range" value="450"/>
+<div class="flex justify-between mt-2 text-[9px] text-slate-600 font-technical">
+<span>0</span>
+<span>500</span>
+<span>1000</span>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-technical text-slate-400 uppercase">Infusion Rate (ml/h)</span>
+<span class="text-sm font-technical text-secondary">12.5</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-secondary" max="50" min="0" step="0.1" type="range" value="12.5"/>
+<div class="flex justify-between mt-2 text-[9px] text-slate-600 font-technical">
+<span>0.0</span>
+<span>25.0</span>
+<span>50.0</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant/10">
+<button class="w-full py-3 text-[10px] font-technical border border-primary/30 text-primary-dim tracking-widest hover:bg-primary/10 transition-all uppercase rounded">
+                                + Add Adjuvant Strategy
+                            </button>
+</div>
+</div>
+</section>
+<!-- Risk Reductions -->
+<section class="glass-panel rounded-xl border border-outline-variant/15 p-5 inner-glow">
+<h4 class="font-technical text-xs font-bold tracking-widest text-primary-dim uppercase mb-6">Risk Reduction Matrix</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-highest/40 p-4 rounded-lg border border-outline-variant/10 text-center">
+<span class="text-[9px] font-technical text-slate-500 uppercase block mb-1">Cardiac Stress</span>
+<span class="text-2xl font-headline font-bold text-tertiary">-62%</span>
+</div>
+<div class="bg-surface-container-highest/40 p-4 rounded-lg border border-outline-variant/10 text-center">
+<span class="text-[9px] font-technical text-slate-500 uppercase block mb-1">Inflammation</span>
+<span class="text-2xl font-headline font-bold text-tertiary">-18%</span>
+</div>
+<div class="col-span-2 relative h-16 mt-2 flex items-end gap-1">
+<!-- Mini Neon Chart (CSS-based) -->
+<div class="flex-1 bg-tertiary/20 h-4 rounded-t-sm"></div>
+<div class="flex-1 bg-tertiary/30 h-8 rounded-t-sm"></div>
+<div class="flex-1 bg-tertiary/40 h-10 rounded-t-sm"></div>
+<div class="flex-1 bg-tertiary/60 h-14 rounded-t-sm shadow-[0_0_10px_#8eff71]"></div>
+<div class="flex-1 bg-tertiary/30 h-6 rounded-t-sm"></div>
+<div class="flex-1 bg-tertiary/20 h-3 rounded-t-sm"></div>
+</div>
+</div>
+</section>
+</div>
+<!-- Middle Column: Main Visualization (5 cols) -->
+<div class="col-span-5 space-y-6">
+<!-- Holographic projection placeholder -->
+<div class="glass-panel h-[400px] rounded-xl border border-primary/20 relative overflow-hidden group">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,244,254,0.08)_0%,_transparent_70%)]"></div>
+<img class="w-full h-full object-cover opacity-60 mix-blend-screen" data-alt="3D translucent holographic human organ model with glowing neural networks and data points in a dark medical digital space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbPReGU7GVp13ebShZASbCAocAJwoGypyr9PdbdLhR0Ymvrp7LJMMOW5X6gRx9mYtpIu24Hz4tT-I-3A_cokr-w9zYRi9ykFi5pOtAA2a51mr0GQ_PU6vnnKvqEXtWxBZF0ZReTWZGGDyHI69UHaql1hs__aYtevktMrzBi7TJ3UzaObmfjpt3lnrk1_q6-M5tJ4nAKrdq6G7jNflxVklqvIG8NHQaoWCr3EZjtjWO8YvOC5QJ5bddZFZj6gOy9T_ZNHhCPHfrt2s"/>
+<div class="absolute top-6 left-6 font-technical">
+<span class="text-[10px] text-primary/70 uppercase block tracking-widest">Active Simulation</span>
+<span class="text-xl font-bold glow-text">LUMBAR SYSTEM 4D</span>
+</div>
+<div class="absolute bottom-6 right-6 flex gap-2">
+<button class="w-10 h-10 bg-surface-container/80 rounded border border-outline-variant flex items-center justify-center hover:text-primary transition-all">
+<span class="material-symbols-outlined">3d_rotation</span>
+</button>
+<button class="w-10 h-10 bg-surface-container/80 rounded border border-outline-variant flex items-center justify-center hover:text-primary transition-all">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+</div>
+<!-- Scanning Line -->
+<div class="absolute top-0 left-0 w-full h-[1px] bg-primary/40 shadow-[0_0_15px_#a1faff] animate-pulse"></div>
+</div>
+<!-- Treatment Timeline Track -->
+<section class="glass-panel rounded-xl border border-outline-variant/15 p-5 inner-glow overflow-hidden">
+<h4 class="font-technical text-xs font-bold tracking-widest text-primary-dim uppercase mb-4">Therapeutic Timeline (90 Days)</h4>
+<div class="relative flex overflow-x-auto custom-scrollbar pb-4 gap-8">
+<!-- Timeline Items -->
+<div class="flex-shrink-0 w-32 relative text-center">
+<div class="w-3 h-3 rounded-full bg-primary mx-auto mb-3 shadow-[0_0_8px_#a1faff]"></div>
+<span class="text-[10px] font-technical text-slate-500 block mb-1">DAY 01</span>
+<p class="text-[11px] font-bold text-on-surface">Initiation</p>
+</div>
+<div class="flex-shrink-0 w-32 relative text-center opacity-40">
+<div class="w-2 h-2 rounded-full bg-outline mx-auto mb-3.5"></div>
+<span class="text-[10px] font-technical text-slate-500 block mb-1">DAY 15</span>
+<p class="text-[11px] font-bold text-on-surface">T-Cell Peak</p>
+</div>
+<div class="flex-shrink-0 w-32 relative text-center">
+<div class="w-3 h-3 rounded-full border-2 border-primary mx-auto mb-3"></div>
+<span class="text-[10px] font-technical text-slate-500 block mb-1">DAY 30</span>
+<p class="text-[11px] font-bold text-primary">Regen Phase</p>
+</div>
+<div class="flex-shrink-0 w-32 relative text-center opacity-40">
+<div class="w-2 h-2 rounded-full bg-outline mx-auto mb-3.5"></div>
+<span class="text-[10px] font-technical text-slate-500 block mb-1">DAY 45</span>
+<p class="text-[11px] font-bold text-on-surface">Equilibrium</p>
+</div>
+<div class="flex-shrink-0 w-32 relative text-center opacity-40">
+<div class="w-2 h-2 rounded-full bg-outline mx-auto mb-3.5"></div>
+<span class="text-[10px] font-technical text-slate-500 block mb-1">DAY 60</span>
+<p class="text-[11px] font-bold text-on-surface">Observation</p>
+</div>
+<!-- Connector Line -->
+<div class="absolute top-[5px] left-16 right-16 h-[1px] bg-outline-variant/30 -z-10"></div>
+</div>
+</section>
+</div>
+<!-- Right Column: Results & Deltas (3 cols) -->
+<div class="col-span-3 space-y-6">
+<!-- Delta Cards: Before vs After -->
+<section class="space-y-4">
+<h4 class="font-technical text-xs font-bold tracking-widest text-primary-dim uppercase">Efficacy Projections</h4>
+<!-- Card 1 -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/15 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-technical text-slate-400">TISSUE REGEN</span>
+<span class="material-symbols-outlined text-tertiary text-lg">trending_up</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="text-[9px] font-technical text-slate-500">BASE</span>
+<span class="text-lg font-technical text-on-surface">12%</span>
+</div>
+<div class="material-symbols-outlined text-outline-variant">double_arrow_right</div>
+<div class="flex flex-col">
+<span class="text-[9px] font-technical text-primary">PROJECTION</span>
+<span class="text-2xl font-headline font-bold text-primary-fixed glow-text">84%</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/15 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-technical text-slate-400">CELLULAR TOXICITY</span>
+<span class="material-symbols-outlined text-error text-lg">trending_down</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="text-[9px] font-technical text-slate-500">BASE</span>
+<span class="text-lg font-technical text-on-surface">42%</span>
+</div>
+<div class="material-symbols-outlined text-outline-variant">double_arrow_right</div>
+<div class="flex flex-col">
+<span class="text-[9px] font-technical text-secondary">PROJECTION</span>
+<span class="text-2xl font-headline font-bold text-secondary-fixed glow-text">09%</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/15 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-technical text-slate-400">ORGAN VITALITY</span>
+<span class="material-symbols-outlined text-tertiary text-lg">bolt</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="text-[9px] font-technical text-slate-500">BASE</span>
+<span class="text-lg font-technical text-on-surface">55%</span>
+</div>
+<div class="material-symbols-outlined text-outline-variant">double_arrow_right</div>
+<div class="flex flex-col">
+<span class="text-[9px] font-technical text-tertiary">PROJECTION</span>
+<span class="text-2xl font-headline font-bold text-tertiary-fixed glow-text">91%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Hub -->
+<div class="pt-4 flex flex-col gap-3">
+<button class="w-full py-4 bg-primary-container text-on-primary-container font-headline font-bold text-sm rounded shadow-[0_0_25px_rgba(0,244,254,0.3)] hover:scale-[1.02] transition-transform">
+                        EXPORT TREATMENT PLAN
+                    </button>
+<button class="w-full py-3 bg-surface-container-highest/60 border border-outline-variant/30 text-on-surface font-technical text-xs tracking-widest rounded hover:bg-surface-container-highest transition-all uppercase">
+                        Save Configuration
+                    </button>
+</div>
+</div>
+</div>
+<!-- System Readout Footer -->
+<footer class="mt-12 pt-8 border-t border-outline-variant/5 grid grid-cols-4 gap-8 pb-12">
+<div class="space-y-1">
+<span class="text-[9px] font-technical text-slate-500 uppercase tracking-widest">Processing Node</span>
+<p class="text-xs font-technical text-secondary-dim">NEURO-CORE-09 // SYDNEY-01</p>
+</div>
+<div class="space-y-1">
+<span class="text-[9px] font-technical text-slate-500 uppercase tracking-widest">Protocol Type</span>
+<p class="text-xs font-technical text-primary-dim">GENETICALLY TARGETED IMMUNOTHERAPY</p>
+</div>
+<div class="space-y-1">
+<span class="text-[9px] font-technical text-slate-500 uppercase tracking-widest">Last Update</span>
+<p class="text-xs font-technical text-on-surface uppercase">2024.08.12 // 04:22:11 GMT</p>
+</div>
+<div class="flex justify-end items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[9px] font-technical text-slate-500">SYSTEM STATUS</span>
+<span class="text-[10px] font-technical text-tertiary">STABLE</span>
+</div>
+<div class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#8eff71]"></div>
+</div>
+</footer>
+</main>
+</body></html>

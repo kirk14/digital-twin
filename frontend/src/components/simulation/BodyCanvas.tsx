@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHealthStore } from '../../store/useHealthStore';
 import type { OrganName } from '../../store/useHealthStore';
-import { Organ } from '../Organ';
+import { Organ } from './Organ';
 import { OrganDetails } from './OrganDetails';
 import { motion } from 'framer-motion';
 

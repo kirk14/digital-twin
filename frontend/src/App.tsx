@@ -8,8 +8,9 @@ import ComparePage from './pages/ComparePage';
 import MedicationPage from './pages/MedicationPage';
 import InsightsPage from './pages/InsightsPage';
 
-import { Sidebar } from './components/Layout/Sidebar';
-import { Topbar } from './components/Layout/Topbar';
+import { Sidebar } from './components/layout/Sidebar';
+import { Topbar } from './components/layout/Topbar';
+import { PageWrapper } from './components/layout/PageWrapper';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -19,28 +20,11 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<PageWrapper><DashboardPage /></PageWrapper>} />
-        <Route path="/compare" element={<PageWrapper><ComparePage /></PageWrapper>} />
+        <Route path="/scenarios" element={<PageWrapper><ComparePage /></PageWrapper>} />
         <Route path="/medication" element={<PageWrapper><MedicationPage /></PageWrapper>} />
         <Route path="/insights" element={<PageWrapper><InsightsPage /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
-  );
-};
-
-const PageWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-      className="w-full h-full relative"
-    >
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-neon-cyan/20 blur-[120px] rounded-full pointer-events-none opacity-30 mix-blend-screen" />
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 pb-20 md:pb-6 relative z-10 w-full h-full min-h-full">
-        {children}
-      </div>
-    </motion.div>
   );
 };
 
@@ -55,19 +39,19 @@ const MainLayout = () => {
         {sidebarOpen && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      {/* Sidebar - Desktop fixed, Mobile animated */}
-      <div className={`fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      {/* Sidebar - fixed left-0 top-0 h-full w-[260px] */}
+      <div className={`fixed inset-y-0 left-0 h-full w-[260px] z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <Sidebar />
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+      {/* Main Content Area - ml-[260px] on Desktop */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden lg:ml-[260px]">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth scrollbar-hide">
           <AnimatedRoutes />

@@ -1,27 +1,31 @@
 import React from 'react';
 import { useHealthStore } from '../../store/useHealthStore';
-import { Sparkles, Activity, ScanLine } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface ControlProps {
   label: string;
   value: number;
   min: number;
   max: number;
-  metricKey: any;
+  metricKey: keyof import('../../store/useHealthStore').HealthState;
   unit: string;
 }
 
 const ControlSlider: React.FC<ControlProps> = ({ label, value, min, max, metricKey, unit }) => {
   const updateMetric = useHealthStore((state) => state.updateMetric);
+  const colorClass = 
+    metricKey === 'weight' ? 'text-primary' :
+    metricKey === 'activityLevel' ? 'text-secondary' :
+    metricKey === 'sleepHours' ? 'text-tertiary' :
+    metricKey === 'systolicBP' ? 'text-error' :
+    'text-primary';
 
   return (
-    <div className="mb-6 group">
-      <div className="flex justify-between items-end mb-2">
-        <label className="text-sm font-medium text-text-muted group-hover:text-neon-cyan transition-colors">{label}</label>
+    <div className="space-y-3">
+      <div className="flex justify-between items-end">
+        <label className="text-[10px] font-technical uppercase text-on-surface-variant group-hover:text-primary transition-colors">{label}</label>
         <div className="text-right">
-          <span className="text-lg font-bold text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">{value}</span>
-          <span className="text-xs text-text-muted ml-1">{unit}</span>
+          <span className={`text-sm font-technical ${colorClass}`}>{value}</span>
+          <span className="text-[10px] text-on-surface-variant font-technical ml-1">{unit}</span>
         </div>
       </div>
       <input
@@ -29,9 +33,11 @@ const ControlSlider: React.FC<ControlProps> = ({ label, value, min, max, metricK
         min={min}
         max={max}
         value={value}
-        onChange={(e) => updateMetric(metricKey, parseFloat(e.target.value))}
-        className="w-full h-1 bg-panelBorder rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-neon-cyan/50
-        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-neon-cyan [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-[0_0_15px_#06b6d4] transition-all"
+        onChange={(e) => updateMetric(metricKey as any, parseFloat(e.target.value))}
+        className="w-full custom-slider appearance-none bg-transparent"
+        style={{
+          // Forcing thumb color to match if we were doing deep CSS mapping, but custom-slider handles it mostly.
+        }}
       />
     </div>
   );
@@ -41,64 +47,62 @@ export const ControlPanel: React.FC = () => {
   const { weight, activityLevel, sleepHours, systolicBP, glucose, isSimulatingImproved, toggleSimulation, xrayMode, toggleXrayMode } = useHealthStore();
 
   return (
-    <div className="glass-panel p-6 h-full flex flex-col relative overflow-hidden group">
-      <div className="absolute top-0 right-0 w-40 h-40 bg-neon-cyan/10 blur-[60px] rounded-full pointer-events-none transition-all duration-700 group-hover:bg-neon-cyan/20" />
-      
-      <div className="flex flex-col gap-4 mb-8 relative z-10">
-        <h2 className="text-lg font-bold text-white border-b border-neon-cyan/30 pb-2 flex justify-between items-center">
-          SYSTEM OVERRIDE
-          <span className="text-[10px] tracking-widest text-neon-cyan uppercase font-mono px-2 py-0.5 rounded bg-neon-cyan/10 border border-neon-cyan/20 animate-pulse">Live</span>
-        </h2>
-        
-        <div className="flex gap-2">
-          {/* What-If Simulation Toggle */}
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleSimulation}
-            className={`flex-1 py-2 rounded-xl text-[10px] font-bold tracking-widest font-mono uppercase flex justify-center items-center gap-2 border transition-all duration-300 relative overflow-hidden ${
-              isSimulatingImproved 
-                ? 'bg-neon-green/20 border-neon-green text-neon-green shadow-glow-green' 
-                : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-neon-cyan/50 hover:bg-neon-cyan/10'
-            }`}
-          >
-            {isSimulatingImproved && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] animate-[typeTerminal_2s_infinite]" />}
-            {isSimulatingImproved ? <Sparkles size={14} className="animate-spin-slow" /> : <Activity size={14} />}
-            {isSimulatingImproved ? 'Optimum' : 'What-If'}
-          </motion.button>
-
-          {/* X-Ray Scanner Toggle */}
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleXrayMode}
-            className={`flex-1 py-2 rounded-xl text-[10px] font-bold tracking-widest font-mono uppercase flex justify-center items-center gap-2 border transition-all duration-300 relative overflow-hidden ${
-              xrayMode 
-                ? 'bg-neon-cyan/20 border-neon-cyan text-neon-cyan shadow-[0_0_15px_#06b6d4]' 
-                : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/30'
-            }`}
-          >
-             <ScanLine size={14} className={xrayMode ? 'animate-pulse' : ''} />
-             X-RAY
-          </motion.button>
+    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+      {/* Sliders Panel */}
+      <div className="glass-panel p-6 rounded-lg relative overflow-hidden flex flex-col justify-center">
+        <div className="absolute top-0 right-0 p-2 opacity-10">
+          <span className="material-symbols-outlined text-6xl">tune</span>
+        </div>
+        <div className="flex justify-between items-center mb-6">
+           <h3 className="text-sm font-technical font-bold text-primary tracking-widest uppercase">Biological Variables</h3>
+           <button 
+              onClick={toggleXrayMode}
+              className={`text-[10px] border px-2 py-1 rounded font-technical uppercase ${xrayMode ? 'border-primary text-primary shadow-glow-cyan' : 'border-outline-variant text-slate-500 hover:text-white'}`}
+           >
+              X-RAY
+           </button>
+        </div>
+        <div className="space-y-6 relative z-10 flex-1 justify-center flex flex-col">
+          <ControlSlider label="Body Mass" value={weight} min={40} max={150} metricKey="weight" unit="kg" />
+          <ControlSlider label="Metabolic Activity" value={activityLevel} min={1} max={10} metricKey="activityLevel" unit="Lvl" />
+          <ControlSlider label="Circadian Rest" value={sleepHours} min={2} max={12} metricKey="sleepHours" unit="Hrs" />
+          <ControlSlider label="Systolic Pressure" value={systolicBP} min={90} max={200} metricKey="systolicBP" unit="mmHg" />
+          <ControlSlider label="Glucose Load" value={glucose} min={60} max={250} metricKey="glucose" unit="mg/dL" />
         </div>
       </div>
 
-      <div className={`flex-1 overflow-y-auto pr-2 scrollbar-hide space-y-2 relative z-10 transition-all duration-500 ${isSimulatingImproved ? 'opacity-40 pointer-events-none grayscale blur-sm' : 'opacity-100'}`}>
+      {/* Presets Panel */}
+      <div className="glass-panel p-6 rounded-lg flex flex-col justify-center">
+        <h3 className="text-sm font-technical font-bold text-primary mb-4 tracking-widest uppercase">System Overrides</h3>
         
-        {isSimulatingImproved && (
-          <div className="absolute inset-0 flex items-center justify-center z-20">
-            <div className="bg-black/80 backdrop-blur-md border border-neon-green/50 text-neon-green font-mono uppercase tracking-widest text-[10px] p-4 rounded-xl flex items-center gap-2 shadow-glow-green">
-               <Sparkles size={14} className="animate-pulse" /> Auto-Optimizing
+        <div className="grid grid-cols-1 gap-3">
+          <button 
+            onClick={toggleSimulation}
+            className={`flex items-center justify-between p-3 bg-surface-container-highest border transition-all group ${isSimulatingImproved ? 'border-tertiary-dim' : 'border-outline-variant hover:border-tertiary-dim'}`}
+          >
+            <div className="text-left">
+              <p className={`text-xs font-technical ${isSimulatingImproved ? 'text-tertiary-dim shadow-glow-green' : 'text-on-surface'}`}>RECOVERY OPTIMIZATION</p>
+              <p className="text-[9px] text-on-surface-variant uppercase mt-1">Deep tissue & CNS repair algorithm</p>
             </div>
-          </div>
-        )}
-
-        <ControlSlider label="Weight" value={weight} min={40} max={150} metricKey="weight" unit="kg" />
-        <ControlSlider label="Activity Level" value={activityLevel} min={1} max={10} metricKey="activityLevel" unit="/ 10" />
-        <ControlSlider label="Sleep" value={sleepHours} min={2} max={12} metricKey="sleepHours" unit="hrs" />
-        <ControlSlider label="Blood Pressure" value={systolicBP} min={90} max={200} metricKey="systolicBP" unit="mmHg" />
-        <ControlSlider label="Glucose Level" value={glucose} min={60} max={250} metricKey="glucose" unit="mg/dL" />
+            <span className={`material-symbols-outlined ${isSimulatingImproved ? 'text-tertiary-dim animate-spin-slow' : 'text-tertiary-dim'}`} data-icon="refresh">refresh</span>
+          </button>
+          
+          <button className="flex items-center justify-between p-3 bg-surface-container-highest border border-outline-variant hover:border-error-dim transition-all group opacity-60">
+            <div className="text-left">
+              <p className="text-xs font-technical text-on-surface">CRITICAL STRESS TEST</p>
+              <p className="text-[9px] text-on-surface-variant uppercase mt-1">Max cortisol & cardiac load</p>
+            </div>
+            <span className="material-symbols-outlined text-error-dim" data-icon="bolt">bolt</span>
+          </button>
+          
+          <button className="flex items-center justify-between p-3 bg-surface-container-highest border border-outline-variant transition-all hover:border-secondary-dim group opacity-60">
+            <div className="text-left">
+              <p className="text-xs font-technical text-on-surface">METABOLIC ACCEL</p>
+              <p className="text-[9px] text-on-surface-variant uppercase mt-1">Fat oxidation & glucose spike</p>
+            </div>
+            <span className="material-symbols-outlined text-secondary-dim" data-icon="speed">speed</span>
+          </button>
+        </div>
       </div>
     </div>
   );

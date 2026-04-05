@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SYNTH-LIFE | AI Insights Console</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00575b",
+                        "on-tertiary": "#0d6100",
+                        "tertiary-fixed-dim": "#2be800",
+                        "secondary-dim": "#43ecdb",
+                        "primary-fixed-dim": "#00e5ee",
+                        "inverse-surface": "#faf8ff",
+                        "primary": "#a1faff",
+                        "surface-container-high": "#171f36",
+                        "on-tertiary-fixed-variant": "#0d6200",
+                        "on-tertiary-container": "#0b5800",
+                        "on-error": "#490006",
+                        "surface-container-highest": "#1c253e",
+                        "primary-dim": "#00e5ee",
+                        "secondary-fixed": "#57fae9",
+                        "on-surface-variant": "#a5aac2",
+                        "on-secondary-fixed": "#004842",
+                        "on-secondary": "#005c55",
+                        "primary-fixed": "#00f4fe",
+                        "error-dim": "#d7383b",
+                        "surface-container-low": "#0c1326",
+                        "background": "#070d1f",
+                        "on-error-container": "#ffa8a3",
+                        "tertiary-fixed": "#2ff801",
+                        "on-primary": "#006165",
+                        "on-tertiary-fixed": "#064200",
+                        "on-secondary-container": "#dcfff9",
+                        "tertiary": "#8eff71",
+                        "on-surface": "#dfe4fe",
+                        "surface-dim": "#070d1f",
+                        "inverse-on-surface": "#4f5469",
+                        "tertiary-container": "#2ff801",
+                        "surface-variant": "#1c253e",
+                        "on-background": "#dfe4fe",
+                        "primary-container": "#00f4fe",
+                        "tertiary-dim": "#2be800",
+                        "surface-container": "#11192e",
+                        "surface-bright": "#222b47",
+                        "outline": "#6f758b",
+                        "surface": "#070d1f",
+                        "secondary-fixed-dim": "#43ecdb",
+                        "error": "#ff716c",
+                        "on-primary-fixed": "#004346",
+                        "surface-container-lowest": "#000000",
+                        "secondary": "#57fae9",
+                        "on-primary-fixed-variant": "#006266",
+                        "surface-tint": "#a1faff",
+                        "error-container": "#9f0519",
+                        "inverse-primary": "#006a6e",
+                        "secondary-container": "#006a62",
+                        "outline-variant": "#41475b",
+                        "on-secondary-fixed-variant": "#00675f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #070d1f; color: #dfe4fe; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .glass-panel { backdrop-filter: blur(12px); border: 1px solid rgba(161, 250, 255, 0.1); }
+        .terminal-cursor::after { content: '_'; animation: blink 1s step-end infinite; color: #00f4fe; }
+        @keyframes blink { 50% { opacity: 0; } }
+        .ambient-glow { position: absolute; filter: blur(120px); border-radius: 9999px; z-index: -1; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<aside class="flex flex-col h-full py-8 px-6 h-screen w-64 fixed left-0 top-0 border-r border-cyan-500/10 bg-slate-950/40 backdrop-blur-xl shadow-[0_0_40px_rgba(0,245,255,0.05)] z-50">
+<div class="mb-12">
+<h1 class="text-xl font-bold tracking-widest text-cyan-400 font-headline">SYNTH-LIFE</h1>
+<p class="text-[10px] tracking-[0.2em] text-slate-500 mt-1 uppercase">V 4.0.21</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-400 hover:text-cyan-200 transition-colors group" href="#">
+<span class="material-symbols-outlined">stat_2</span>
+<span class="font-label text-sm tracking-wide">Monitor</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-400 hover:text-cyan-200 transition-colors group" href="#">
+<span class="material-symbols-outlined">biotech</span>
+<span class="font-label text-sm tracking-wide">Sim Scenarios</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-slate-400 hover:text-cyan-200 transition-colors group" href="#">
+<span class="material-symbols-outlined">medication</span>
+<span class="font-label text-sm tracking-wide">Medication</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-cyan-400 border-r-2 border-cyan-400 bg-cyan-400/5 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label text-sm tracking-wide">AI Insights</span>
+</a>
+</nav>
+<button class="mt-auto w-full py-4 bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 text-primary font-label text-xs tracking-widest hover:bg-primary/30 transition-all">
+            RUN SIMULATION
+        </button>
+</aside>
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-transparent z-40">
+<div class="flex justify-between items-center px-8 max-w-[1400px] ml-auto h-full">
+<div class="flex items-center gap-4">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#a1faff]"></div>
+<span class="text-lg font-black text-cyan-400 uppercase tracking-tighter font-headline">HealthCore Simulation</span>
+<span class="text-[10px] text-slate-500 font-mono ml-4">SYSTEM_STATE: OPTIMAL</span>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-6 text-slate-500">
+<span class="material-symbols-outlined hover:text-cyan-400 cursor-pointer transition-all">notifications_active</span>
+<span class="material-symbols-outlined hover:text-cyan-400 cursor-pointer transition-all">sensors</span>
+<span class="material-symbols-outlined hover:text-cyan-400 cursor-pointer transition-all">settings</span>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-outline-variant">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Dr. Aris Thorne</p>
+<p class="text-[10px] text-primary/60 font-mono">CMO_ACCESS</p>
+</div>
+<img alt="Chief Medical Officer Profile" class="w-10 h-10 rounded-lg border border-primary/20 object-cover" data-alt="Close-up professional portrait of a medical officer in a high-tech environment with soft blue accent lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOO4kw233Ahz6H28LBh8Pfh5fbw64KyO4HebsN8XozKOSKzNc0PCFezRRZTWa9VuuKbiFZ1xVJz7N2i0OB6HyO7Ary5iQrG98gW1lzGR7Zmd-oH0p9Za52STh_glRdbmsf0bfO_VBySn72O40zcN6UrhdcGmobUTbIswBOXS78m5A-FnxQAE3MgIIsxwr7FTkj9AxaL5aFq-IbsMwTlDhtFIjWmNd5a9OOoe3Wju5Swv0ovHupalxbkQTON-ZZPuOfnxiacCczbd0"/>
+</div>
+</div>
+</div>
+</header>
+<main class="ml-64 pt-20 p-8 min-h-screen relative max-w-[1400px]">
+<div class="ambient-glow bg-primary/5 w-96 h-96 top-20 right-20"></div>
+<div class="ambient-glow bg-secondary/5 w-[500px] h-[500px] bottom-0 left-0"></div>
+<section class="mb-12">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<h2 class="text-3xl font-headline font-bold tracking-tight text-on-surface">Neural Diagnostics Console</h2>
+</div>
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-12 lg:col-span-8">
+<div class="bg-surface-container-lowest border border-primary/10 rounded-lg p-6 font-mono text-sm min-h-[400px] shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 via-transparent to-primary/50 opacity-30"></div>
+<div class="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant/30">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="ml-4 text-slate-500 text-[10px]">ai_inference_v4_stream.log</span>
+</div>
+<span class="text-[10px] text-slate-600">ENCRYPTION: AES-256-GCM</span>
+</div>
+<div class="space-y-2 text-primary/80">
+<p class="text-primary"><span class="text-slate-500">[14:02:11]</span> INITIALIZING BIOMETRIC OVERLAY...</p>
+<p><span class="text-slate-500">[14:02:12]</span> ANALYZING GENOMIC SEQUENCES (12.4M NODES)</p>
+<p><span class="text-slate-500">[14:02:14]</span> <span class="text-tertiary">SUCCESS:</span> CORE SYNCED WITH TWIN_ID_9921</p>
+<p><span class="text-slate-500">[14:02:15]</span> WARNING: PULSE WAVE IRREGULARITY DETECTED IN NODE_7</p>
+<p><span class="text-slate-500">[14:02:18]</span> RUNNING PREDICTIVE CARDIAC MODEL (99.2% CONFIDENCE)</p>
+<div class="mt-6 p-4 bg-primary/5 rounded border-l-2 border-primary">
+<p class="text-primary font-bold mb-2">INTELLIGENCE SUMMARY:</p>
+<p class="terminal-cursor">The digital twin displays high-fidelity response to the current simulated drug trial. Mitochondrial efficiency is up 4.2%. However, there is a recurring data-drift in the neural pathways during REM sleep simulations. Mitigation strategy suggested: Adjustment of neurotransmitter release coefficients by 0.05%.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-surface-container-high p-6 rounded-lg border border-outline-variant/20 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-[10px] text-slate-400 font-label tracking-widest uppercase">Global Simulation Health</p>
+<h3 class="text-4xl font-headline font-bold text-primary mt-1">94.8%</h3>
+</div>
+<span class="material-symbols-outlined text-primary/40 text-4xl">analytics</span>
+</div>
+<div class="h-2 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[94.8%]"></div>
+</div>
+<p class="mt-4 text-xs text-slate-400 leading-relaxed">System performance within 1.2 standard deviations of nominal baseline. All sensors online.</p>
+</div>
+<div class="bg-surface-container-high p-6 rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-secondary-fixed">memory</span>
+<span class="text-xs font-label tracking-widest uppercase text-slate-400">Node Activity</span>
+</div>
+<div class="flex items-end gap-1 h-24 mb-4">
+<div class="flex-1 bg-secondary/20 h-[40%] rounded-t-sm hover:bg-secondary/40 transition-all"></div>
+<div class="flex-1 bg-secondary/20 h-[65%] rounded-t-sm hover:bg-secondary/40 transition-all"></div>
+<div class="flex-1 bg-secondary/40 h-[85%] rounded-t-sm hover:bg-secondary/60 transition-all"></div>
+<div class="flex-1 bg-secondary/20 h-[30%] rounded-t-sm hover:bg-secondary/40 transition-all"></div>
+<div class="flex-1 bg-secondary/60 h-[95%] rounded-t-sm hover:bg-secondary/80 transition-all"></div>
+<div class="flex-1 bg-secondary/30 h-[50%] rounded-t-sm hover:bg-secondary/50 transition-all"></div>
+<div class="flex-1 bg-secondary/20 h-[70%] rounded-t-sm hover:bg-secondary/40 transition-all"></div>
+<div class="flex-1 bg-secondary/50 h-[80%] rounded-t-sm hover:bg-secondary/70 transition-all"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 font-mono">
+<span>00:00H</span>
+<span>ACTIVE NODES: 4,021</span>
+<span>CURRENT</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-12">
+<h3 class="text-sm font-label tracking-widest text-primary/60 mb-6 uppercase">Biological Risk Assessments</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-low border border-error/20 p-6 rounded relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 bg-error/10 text-error text-[10px] font-mono">HIGH RISK</div>
+<span class="material-symbols-outlined text-error mb-4" style="font-variation-settings: 'FILL' 1;">heart_broken</span>
+<h4 class="font-headline font-bold text-lg mb-2">Myocardial Strain</h4>
+<p class="text-sm text-slate-400 leading-relaxed mb-4">Prediction shows a 14% increase in strain over the next 48 hours based on current simulation variables.</p>
+<div class="flex items-center gap-2 text-xs font-mono text-error">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                        CRITICAL_THRESHOLD_EXCEEDED
+                    </div>
+</div>
+<div class="bg-surface-container-low border border-tertiary/20 p-6 rounded relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 bg-tertiary/10 text-tertiary text-[10px] font-mono">OPTIMAL</div>
+<span class="material-symbols-outlined text-tertiary mb-4" style="font-variation-settings: 'FILL' 1;">neurology</span>
+<h4 class="font-headline font-bold text-lg mb-2">Neural Plasticity</h4>
+<p class="text-sm text-slate-400 leading-relaxed mb-4">Synaptic density remains high. Cognitive resilience index at 0.89. No degradation detected.</p>
+<div class="flex items-center gap-2 text-xs font-mono text-tertiary">
+<span class="material-symbols-outlined text-sm">verified</span>
+                        STABLE_PATTERN
+                    </div>
+</div>
+<div class="bg-surface-container-low border border-primary/20 p-6 rounded relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 bg-primary/10 text-primary text-[10px] font-mono">MONITORING</div>
+<span class="material-symbols-outlined text-primary mb-4" style="font-variation-settings: 'FILL' 1;">fluid_med</span>
+<h4 class="font-headline font-bold text-lg mb-2">Cytokine Levels</h4>
+<p class="text-sm text-slate-400 leading-relaxed mb-4">Mild fluctuation in IL-6 markers. Observed correlates with simulated stress induction tests.</p>
+<div class="flex items-center gap-2 text-xs font-mono text-primary">
+<span class="material-symbols-outlined text-sm">info</span>
+                        TRACE_DRIFT_0.02
+                    </div>
+</div>
+</div>
+</section>
+<section>
+<div class="bg-surface-container-highest border border-outline-variant/30 rounded-xl overflow-hidden shadow-2xl">
+<div class="p-8 grid grid-cols-12 gap-8 items-center">
+<div class="col-span-12 lg:col-span-5">
+<div class="relative w-full aspect-square rounded-full border-2 border-dashed border-primary/10 flex items-center justify-center p-8">
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+<img alt="3D Molecular Model" class="w-full h-full object-contain relative z-10 opacity-80 mix-blend-screen" data-alt="Futuristic 3D visualization of a complex biological molecule glowing with neon cyan and teal highlights against a dark space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcaOt2_gLNDZzh9G50h_M8K2cx1X2hq2CfpoasegYIdQzWsBZT85zoj2gEbmBThFByZ3OPAScAErPkPcc7BUX6X7FxTuB1zaSkyyib_5mvu4TlagK97dl4z36OCSiXlvA1nEb0ShNsXguHel1Pj7t4aAmQuPE8RbiygO0iQtToD2kAve15CpCBmsZWlt9zuW6WKaSmsn8cMA2eF79KFe1JTHf-91qlz-T5Wk3gxTR1NAS_8Qi3teCS8KZxgCVffz9Y-R1K60i5XXw"/>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-7">
+<h3 class="text-2xl font-headline font-bold mb-6">AI Treatment Recommendations</h3>
+<div class="space-y-6">
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-12 h-12 rounded bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 group-hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-primary">science</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface mb-1">Targeted Gene Therapy Adjustment</h5>
+<p class="text-sm text-slate-400 leading-relaxed">Modify sequence #4412-B to mitigate simulated myocardial strain. High probability of stabilization.</p>
+<div class="mt-2 flex gap-4">
+<span class="text-[10px] font-mono text-primary uppercase">Confidence: 91%</span>
+<span class="text-[10px] font-mono text-secondary-fixed uppercase">Priority: Urgent</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4 group cursor-pointer">
+<div class="w-12 h-12 rounded bg-tertiary/10 flex items-center justify-center shrink-0 border border-tertiary/20 group-hover:bg-tertiary/20 transition-all">
+<span class="material-symbols-outlined text-tertiary">nutrition</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface mb-1">Optimized Micronutrient Protocol</h5>
+<p class="text-sm text-slate-400 leading-relaxed">Increase magnesium-threonate intake by 150mg to support neural plasticity during high-load simulations.</p>
+<div class="mt-2 flex gap-4">
+<span class="text-[10px] font-mono text-primary uppercase">Confidence: 84%</span>
+<span class="text-[10px] font-mono text-slate-500 uppercase">Priority: Routine</span>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/30">
+<button class="px-8 py-3 bg-primary text-on-primary-fixed font-headline font-bold text-sm tracking-widest hover:bg-primary-fixed transition-all flex items-center gap-3">
+                                    APPLY RECOMMENDATIONS
+                                    <span class="material-symbols-outlined text-sm">bolt</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="mt-20 py-8 border-t border-outline-variant/10 text-center">
+<p class="text-[10px] font-mono text-slate-600 tracking-[0.3em] uppercase">Authored by HealthCore AI v4.0.21 | Quantum Simulation Cluster [HK-09]</p>
+</footer>
+</main>
+</body></html>

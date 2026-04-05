@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useHealthStore } from '../store/useHealthStore';
-import type { OrganStateData, OrganName } from '../store/useHealthStore';
+import { useHealthStore } from '../../store/useHealthStore';
+import type { OrganStateData, OrganName } from '../../store/useHealthStore';
 import { organConfig } from './organConfig';
 import { useOrganAnimation } from './useOrganAnimation';
 
