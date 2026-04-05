@@ -42,3 +42,10 @@ venv/
 .env/
 .venv/
 env/
+
+# Heavy ML datasets and environments
+*.pt
+*.pth
+*.json
+data/
+processed_dir/
