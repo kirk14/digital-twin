@@ -15,7 +15,7 @@ export default function MedicationPage() {
   const [drug, setDrug] = useState(PRESET_DRUGS[0].name);
   const [dosage, setDosage] = useState(PRESET_DRUGS[0].dosage);
   
-  const { stage, progress, isRunning, initialScore, startSimulation } = useSimulation();
+  const { stage, progress, isRunning, initialScore, startSimulation, aiNote } = useSimulation();
   const healthScore = useHealthStore((s) => s.healthScore);
 
   const handleSimulate = () => {
@@ -182,6 +182,13 @@ export default function MedicationPage() {
             <h3 className="text-sm font-technical font-bold text-on-surface uppercase tracking-widest">Efficacy Projection</h3>
             <span className="px-2 py-1 bg-tertiary/10 text-tertiary text-[9px] font-technical uppercase tracking-[0.2em] border border-tertiary/20">High Confidence</span>
           </div>
+          
+          {aiNote && (
+            <div className="mb-6 p-4 bg-tertiary/10 border border-tertiary/30 rounded text-tertiary">
+              <p className="text-[10px] font-technical uppercase tracking-widest mb-1">Causal AI Intel:</p>
+              <p className="text-xs font-mono">{aiNote}</p>
+            </div>
+          )}
 
           <div className="relative h-[300px] w-full bg-surface-container-highest/30 rounded flex items-center justify-center mb-6 overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,106,110,0.1)_0%,transparent_70%)]"></div>

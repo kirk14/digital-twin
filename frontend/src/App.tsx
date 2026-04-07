@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import LandingPage from './pages/LandingPage';
+import PatientInputPage from './pages/PatientInputPage';
 import DashboardPage from './pages/DashboardPage';
 import ComparePage from './pages/ComparePage';
 import MedicationPage from './pages/MedicationPage';
@@ -19,6 +20,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/patient-input" element={<PatientInputPage />} />
         <Route path="/dashboard" element={<PageWrapper><DashboardPage /></PageWrapper>} />
         <Route path="/scenarios" element={<PageWrapper><ComparePage /></PageWrapper>} />
         <Route path="/medication" element={<PageWrapper><MedicationPage /></PageWrapper>} />

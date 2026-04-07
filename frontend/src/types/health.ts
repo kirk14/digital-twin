@@ -36,6 +36,7 @@ export interface MedSimulationState {
   dosage: string;
   initialScore: number;
   finalScore: number | null;
+  aiNote: string | null;
   intervalId: ReturnType<typeof setInterval> | null;
 }
 
@@ -50,13 +51,16 @@ export interface MedicationEffect {
 // ── Health Input ───────────────────────────────────────────────────────────
 
 export interface HealthInputs {
+  age: number;
+  height: number;
   weight: number;
-  activityLevel: number;   // 1-10 scale (maps to steps_per_day on backend)
+  bloodOxygen: number;
+  activityLevel: number;
   sleepHours: number;
   systolicBP: number;
   diastolicBP: number;
   glucose: number;
-  stressLevel: number;     // 0-10 scale (maps to stress_level 0-100 on backend)
+  stressLevel: number;
   heartRate: number;
 }
 

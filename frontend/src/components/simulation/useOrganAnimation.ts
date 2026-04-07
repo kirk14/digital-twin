@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { OrganName, OrganStateData } from '../store/useHealthStore';
+import type { OrganName, OrganStateData } from '../../store/useHealthStore';
 
 export const useOrganAnimation = (organId: OrganName, state: OrganStateData) => {
   const { speed, intensity } = state;

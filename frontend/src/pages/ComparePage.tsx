@@ -59,9 +59,12 @@ const MiniBody: React.FC<MiniBodyProps> = React.memo(({ organs }) => {
 
 export default function ComparePage() {
   const store = useHealthStore();
-  const { weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, healthScore } = store;
+  const { age, height, bloodOxygen, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, healthScore } = store;
 
   const optimizedInputs = useMemo(() => ({
+    age,
+    height,
+    bloodOxygen,
     weight: Math.max(65, weight - 5),
     activityLevel: Math.min(10, activityLevel + 4),
     sleepHours: Math.max(8, sleepHours + 1.5),

@@ -74,6 +74,9 @@ export const AIInsights: React.FC = () => {
   const setApiResponse = useHealthStore((s) => s.setApiResponse);
   const setIsAnalyzing = useHealthStore((s) => s.setIsAnalyzing);
 
+  const age = useHealthStore((s) => s.age);
+  const height = useHealthStore((s) => s.height);
+  const bloodOxygen = useHealthStore((s) => s.bloodOxygen);
   const weight = useHealthStore((s) => s.weight);
   const activityLevel = useHealthStore((s) => s.activityLevel);
   const sleepHours = useHealthStore((s) => s.sleepHours);
@@ -91,14 +94,14 @@ export const AIInsights: React.FC = () => {
     if (isAnalyzing) return;
     setIsAnalyzing(true);
     try {
-      const result = await analyzeHealth({ weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate });
+      const result = await analyzeHealth({ age, height, bloodOxygen, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate });
       setApiResponse(result);
     } catch (e) {
       console.error('[AIInsights] analyzeHealth failed:', e);
     } finally {
       setIsAnalyzing(false);
     }
-  }, [isAnalyzing, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, setApiResponse, setIsAnalyzing]);
+  }, [isAnalyzing, age, height, bloodOxygen, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, setApiResponse, setIsAnalyzing]);
 
   return (
     <div className="glass-panel p-6 h-full flex flex-col border border-white/5 relative overflow-hidden group">

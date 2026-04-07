@@ -1,4 +1,4 @@
-import type { OrganName } from '../store/useHealthStore';
+import type { OrganName } from '../../store/useHealthStore';
 
 export interface OrganConfigData {
   id: OrganName;

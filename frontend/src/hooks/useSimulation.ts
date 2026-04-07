@@ -24,15 +24,15 @@ export function useSimulation() {
     async (drug: string, dosage: string) => {
       if (medSim.isRunning || !drug || !dosage) return;
 
+      let result = null;
       try {
-        // API call — fires and forgets (result used for final score display)
-        await simulateMedication(drug, dosage, healthScore);
-      } catch (_) {
-        // Silently fall through — store will still run local simulation
+        result = await simulateMedication(drug, dosage, healthScore);
+      } catch (e) {
+        console.warn("Simulation API call failed, falling back to local simulation.", e);
       }
 
       // Kick off the local stage progression (driven by store)
-      runMedicationSimulation(drug, dosage);
+      runMedicationSimulation(drug, dosage, result);
     },
     [medSim.isRunning, healthScore, runMedicationSimulation]
   );
@@ -45,6 +45,7 @@ export function useSimulation() {
     dosage: medSim.dosage,
     initialScore: medSim.initialScore,
     finalScore: medSim.finalScore,
+    aiNote: medSim.aiNote,
     startSimulation,
   };
 }

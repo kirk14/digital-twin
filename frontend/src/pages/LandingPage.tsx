@@ -14,16 +14,10 @@ export default function LandingPage() {
 
         <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/dashboard"
+            to="/patient-input"
             className="px-6 py-3 bg-primary/15 border border-primary text-primary font-technical uppercase tracking-widest text-xs hover:bg-primary/25 transition-colors"
           >
-            Open Dashboard
-          </Link>
-          <Link
-            to="/insights"
-            className="px-6 py-3 bg-surface-container-high border border-outline-variant text-on-surface font-technical uppercase tracking-widest text-xs hover:border-primary/60 transition-colors"
-          >
-            AI Insights
+            Enter Patient Data
           </Link>
         </div>
       </div>

@@ -6,6 +6,9 @@ export type { OrganName, OrganStatus, OrganStateData, MedStage, MedSimulationSta
 
 export interface HealthState {
   // ── Inputs ──────────────────────────────────────────────────────────────
+  age: number;
+  height: number;
+  bloodOxygen: number;
   weight: number;
   activityLevel: number;
   sleepHours: number;
@@ -26,6 +29,7 @@ export interface HealthState {
     dosage: string;
     initialScore: number;
     finalScore: number | null;
+    aiNote: string | null;
     intervalId: ReturnType<typeof setInterval> | null;
   };
 
@@ -44,7 +48,7 @@ export interface HealthState {
   updateMetric: (key: keyof HealthState, value: number) => void;
   setFocusedOrgan: (organ: import('../types/health').OrganName | null) => void;
   setSelectedScenario: (val: string) => void;
-  runMedicationSimulation: (drug: string, dosage: string) => void;
+  runMedicationSimulation: (drug: string, dosage: string, result?: import('../types/health').MedicationSimResponse | null) => void;
   toggleSimulation: () => void;
   toggleXrayMode: () => void;
   recalculateState: () => void;
@@ -66,6 +70,9 @@ const resolveColor = (status: OrganStatus): string => {
 type MedStage = 'idle' | 'ingestion' | 'absorption' | 'peak' | 'recovery';
 
 export const useHealthStore = create<HealthState>((set, get) => ({
+  age: 35,
+  height: 170,
+  bloodOxygen: 98,
   weight: 72,
   activityLevel: 4,
   sleepHours: 6.5,
@@ -86,6 +93,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
     dosage: '',
     initialScore: 0,
     finalScore: null,
+    aiNote: null,
     intervalId: null,
   },
 
@@ -132,7 +140,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
   // ── Medication Simulation ─────────────────────────────────────────────────
 
-  runMedicationSimulation: (drug, dosage) => {
+  runMedicationSimulation: (drug, dosage, result) => {
     const state = get();
     if (state.medSim.isRunning) return;
 
@@ -148,6 +156,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
         dosage,
         initialScore: state.healthScore,
         finalScore: null,
+        aiNote: result?.ai_note || null,
         intervalId: null,
       },
     });
@@ -171,12 +180,20 @@ export const useHealthStore = create<HealthState>((set, get) => ({
 
       // Apply biological modifications at key stages
       if (newProgress === 35) {
-        set({ glucose: Math.max(80, current.glucose - 10) });
+        if (result && result.affected_organs.includes("kidneys")) {
+            set({ glucose: Math.max(80, current.glucose - 15) });
+        } else {
+            set({ glucose: Math.max(80, current.glucose - 10) });
+        }
       }
       if (newProgress === 65) {
+        let bpDrop = 15;
+        if (result && result.delta > 5) bpDrop = 25;
+        if (result && result.delta < 0) bpDrop = -10; // Adverse effect
+
         set({
-          systolicBP: Math.max(110, current.systolicBP - 15),
-          diastolicBP: Math.max(70, current.diastolicBP - 10),
+          systolicBP: Math.max(90, current.systolicBP - bpDrop),
+          diastolicBP: Math.max(60, current.diastolicBP - (bpDrop * 0.6)),
           stressLevel: Math.max(2, current.stressLevel - 2),
         });
       }
@@ -192,7 +209,7 @@ export const useHealthStore = create<HealthState>((set, get) => ({
             isRunning: false,
             stage: 'idle',
             progress: 0,
-            finalScore: s.healthScore,
+            finalScore: result ? result.score_after : s.healthScore,
             intervalId: null,
           },
         }));

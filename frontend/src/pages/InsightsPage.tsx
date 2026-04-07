@@ -11,14 +11,14 @@ export default function InsightsPage() {
   const setIsAnalyzing = useHealthStore((s) => s.setIsAnalyzing);
   const apiResponse = useHealthStore((s) => s.apiResponse);
 
-  const { weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, healthScore } = useHealthStore();
+  const { age, height, bloodOxygen, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, healthScore } = useHealthStore();
 
   const runAnalysis = useCallback(async () => {
     if (isAnalyzing) return;
     setIsAnalyzing(true);
     setLogs(["[14:02:11] INITIALIZING BIOMETRIC OVERLAY...", "[14:02:12] ANALYZING GENOMIC SEQUENCES"]);
     try {
-      const result = await analyzeHealth({ weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate });
+      const result = await analyzeHealth({ age, height, bloodOxygen, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate });
       setLogs((prev) => [...prev, "[14:02:14] SUCCESS: CORE SYNCED", "[14:02:18] RUNNING PREDICTIVE MODEL"]);
       setApiResponse(result);
     } catch (e) {
@@ -26,7 +26,7 @@ export default function InsightsPage() {
     } finally {
       setIsAnalyzing(false);
     }
-  }, [isAnalyzing, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, setApiResponse, setIsAnalyzing]);
+  }, [isAnalyzing, age, height, bloodOxygen, weight, activityLevel, sleepHours, systolicBP, diastolicBP, glucose, stressLevel, heartRate, setApiResponse, setIsAnalyzing]);
 
   return (
     <div className="w-full flex flex-col gap-6 h-full pb-8">

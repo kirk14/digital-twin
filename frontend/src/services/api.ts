@@ -201,16 +201,16 @@ export async function analyzeHealth(inputs: HealthInputs): Promise<AnalysisRespo
 
   // Real backend call — maps frontend field names to backend schema
   const payload = {
-    age: 35, // TODO: add age to inputs when user profile is implemented
+    age: inputs.age,
     steps_per_day: inputs.activityLevel * 1500,
     sleep_hours: inputs.sleepHours,
     heart_rate: inputs.heartRate,
     systolic_bp: inputs.systolicBP,
     diastolic_bp: inputs.diastolicBP,
-    blood_oxygen: 98,
+    blood_oxygen: inputs.bloodOxygen,
     stress_level: inputs.stressLevel * 10,
     weight_kg: inputs.weight,
-    height_cm: 170,
+    height_cm: inputs.height,
   };
 
   const { data } = await apiClient.post<AnalysisResponse>('/analyze', payload);
