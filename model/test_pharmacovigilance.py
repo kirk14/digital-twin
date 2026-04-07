@@ -1,5 +1,5 @@
 import pytest
-from pharmacovigilance import PharmacovigilanceEngine
+from model.pharmacovigilance import PharmacovigilanceEngine
 
 @pytest.fixture
 def engine():

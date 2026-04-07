@@ -77,7 +77,7 @@ class ClinicalExplainer:
 
 if __name__ == "__main__":
     # Test Explainer
-    from trajectory_transformer import TimeAwareTransformer
+    from model.trajectory_transformer import TimeAwareTransformer
     
     # 12 biomarkers + Δt + treatment
     labels = [

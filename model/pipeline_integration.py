@@ -1,10 +1,10 @@
 import torch
 import numpy as np
 import json
-from preprocessing import FHIRPreprocessor
-from baseline_model import BiomarkerTrajectoryModel
-from simulation_engine import CausalTreatmentEngine
-from safety_net import SafetyNet
+from model.preprocessing import FHIRPreprocessor
+from model.baseline_model import BiomarkerTrajectoryModel
+from model.simulation_engine import CausalTreatmentEngine
+from model.safety_net import SafetyNet
 
 def run_digital_twin_pipeline(fhir_bundle_path: str, proposed_drug: str, dosage_mg: float):
     """

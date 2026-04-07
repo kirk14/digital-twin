@@ -8,9 +8,9 @@ import ComparePage from './pages/ComparePage';
 import MedicationPage from './pages/MedicationPage';
 import InsightsPage from './pages/InsightsPage';
 
-import { Sidebar } from './components/layout/Sidebar';
-import { Topbar } from './components/layout/Topbar';
-import { PageWrapper } from './components/layout/PageWrapper';
+import { Sidebar } from './components/Layout/Sidebar';
+import { Topbar } from './components/Layout/Topbar';
+import { PageWrapper } from './components/Layout/PageWrapper';
 
 const AnimatedRoutes = () => {
   const location = useLocation();

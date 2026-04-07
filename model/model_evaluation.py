@@ -164,7 +164,7 @@ def plot_shap_summary(model, background_tensor, test_tensor, feature_names, file
 
 # Sample usage execution block 
 if __name__ == "__main__":
-    from trajectory_transformer import TimeAwareTransformer
+    from model.trajectory_transformer import TimeAwareTransformer
     import os
 
     # 1. Core Configuration & Device Selection
